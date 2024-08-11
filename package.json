@@ -20,7 +20,19 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
-    "electron-updater": "^6.1.7"
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "@nut-tree-fork/nut-js": "^4.2.2",
+    "cors": "^2.8.5",
+    "electron-updater": "^6.1.7",
+    "express": "^4.19.2",
+    "idb": "^8.0.0",
+    "node-audio-volume-mixer": "^1.0.3",
+    "react-redux": "^9.1.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",

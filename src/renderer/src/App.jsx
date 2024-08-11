@@ -1,14 +1,17 @@
 import electronLogo from './assets/electron.svg'
 import TcpIndicator from './components/TcpIndicator'
+import datajson from './assets/datajson/keyboard.json'
+import MainScreen from './tabcontent'
+
 
 function App() {
+  console.log(datajson) 
   const ipcHandle = () => window.api.send('toMain', 'Hello from Renderer')
 
   return (
     <>
       <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Hi, all!</div>
-      <div className="text">TCP Client for my FMU Runner</div>
+      <MainScreen />
       <p className="tip">
         Please try pressing <code>F12</code> to open the devTool
       </p>
@@ -18,11 +21,13 @@ function App() {
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
             Send IPC
           </a>
+
           <TcpIndicator />
         </div>
       </div>
     </>
   )
 }
+
 
 export default App

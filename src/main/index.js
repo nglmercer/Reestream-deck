@@ -2,7 +2,66 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import express from 'express';
+import http from 'http';
+import socketIo from 'socket.io';
+import cors from 'cors';
+import  AudioController  from './audioController';
+import keynut from './keynut';
+const expressApp = express();
+const server = http.createServer(expressApp);
+expressApp.use(cors());
+const io = socketIo(server, {
+  cors: {
+    origin: "*", // Permite conexiones desde cualquier origen
+    methods: ["GET", "POST"]
+  }
+});
+server.listen(3000, () => {
+  console.log('Socket.IO server listening on port 3000');
+});
+const audioController = new AudioController();
+const UPDATE_INTERVAL = 5000;
+// console.log(keynut.getKeyboardControlsAsJSONKey());
+io.on('connection', (socket) => {
+  console.log('Nuevo cliente conectado');
+  
+  socket.on('setMasterVolume', (volume) => {
+    try {
+      audioController.setMasterVolume(volume);
+      socket.emit('masterVolumeChanged', volume);
+    } catch (error) {
+      socket.emit('error', error.message);
+    }
+  });
 
+  // Event to set the volume of a specific session
+  socket.on('setVolume', ({ pid, volume }) => {
+    try {
+      audioController.setSessionVolume(pid, volume);
+      socket.emit('volumeChanged', { pid, volume });
+    } catch (error) {
+      socket.emit('error', error.message);
+    }
+  });
+  sendAudioData(socket);
+
+  // Configurar intervalo para enviar actualizaciones
+  const intervalId = setInterval(() => sendAudioData(socket), UPDATE_INTERVAL);
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
+    clearInterval(intervalId);
+  });
+
+});
+function sendAudioData(socket) {
+  const sessions = audioController.getAllSessions();
+  const masterVolume = audioController.getMasterVolume();
+  const isMasterMuted = audioController.isMasterMuted();
+
+  socket.emit('audioData', { sessions, masterVolume, isMasterMuted });
+}
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
