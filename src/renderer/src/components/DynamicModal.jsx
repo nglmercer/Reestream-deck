@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Modal, Box, Button, TextField, FormControl, InputLabel,Select,MenuItem, Grid, Paper, Typography, Checkbox, IconButton } from '@mui/material';
+import { Modal, Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, Paper, Typography, Checkbox, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { openDB } from 'idb';
+
 const DynamicModal = ({ config, onSave }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [currentField, setCurrentField] = useState(null);
   const [tempSelection, setTempSelection] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -61,6 +63,7 @@ const DynamicModal = ({ config, onSave }) => {
   const handleSelectorClose = () => {
     setSelectorOpen(false);
     setTempSelection([]);
+    setSearchQuery('');
   };
 
   const handleSelectorOpen = (field) => {
@@ -76,6 +79,10 @@ const DynamicModal = ({ config, onSave }) => {
     }));
     handleSelectorClose();
   };
+
+  const filteredOptions = currentField?.options?.filter(option =>
+    option.label.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   const renderField = (field) => {
     switch (field.type) {
@@ -113,8 +120,8 @@ const DynamicModal = ({ config, onSave }) => {
       case 'multiSelect':
         return (
           <FormControl fullWidth margin="normal" key={field.name}>
-            <InputLabel>{field.label}</InputLabel>
-            <Button onClick={() => handleSelectorOpen(field)}>
+            <Typography className='text-gray-700'>{field.label}</Typography>
+            <Button variant='outlined' onClick={() => handleSelectorOpen(field)}>
               {formData[field.name] 
                 ? (Array.isArray(formData[field.name]) 
                   ? formData[field.name].map(item => item.label).join(', ')
@@ -162,34 +169,22 @@ const DynamicModal = ({ config, onSave }) => {
             <CloseIcon />
           </IconButton>
         </Typography>
+        <TextField
+          sx={{ mb: 2 }}
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          fullWidth
+        />
         <Grid container spacing={2} sx={{ mt: 2 }}>
-          {currentField?.options.map((option) => (
-            <Grid item xs={4} sm={3} md={2} key={option.value}>
-              <Paper
-                elevation={3}
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  bgcolor: tempSelection.some(item => item.value === option.value) ? 'action.selected' : 'background.paper',
-                }}
-                onClick={() => handleOptionToggle(option)}
-              >
-                <Checkbox
-                  checked={tempSelection.some(item => item.value === option.value)}
-                  sx={{ p: 0, mb: 1 }}
-                />
-                <Typography variant="body2" align="center">
-                  {option.label}
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
+ {filteredOptions.map((option) => (             
+ <Grid item xs={4} sm={3} md={2} key={option.value}>               
+ <Paper                 elevation={3}                 sx={{                   p: 2,                   display: 'flex',                   flexDirection: 'column',                   alignItems: 'center',                   cursor: 'pointer',                   bgcolor: tempSelection.some(item => item.value === option.value) ? 'action.selected' : 'background.paper',                 }}                 onClick={() => handleOptionToggle(option)}               >                 <Checkbox                   checked={tempSelection.some(item => item.value === option.value)}                   sx={{ p: 0, mb: 1 }}                 />                 
+ <Typography variant="body2" align="center">                   {option.label}                 
+ </Typography>               </Paper>             </Grid>           ))}
         </Grid>
         <Button onClick={handleSelectionConfirm} fullWidth variant="contained" sx={{ mt: 2 }}>
-          Aceptar
+          Confirm
         </Button>
       </Box>
     </Modal>
@@ -197,7 +192,7 @@ const DynamicModal = ({ config, onSave }) => {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Open Modal</Button>
+      <Button onClick={handleOpen} variant='contained' sx={{ mt: 2 }}>Open Modal</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -215,7 +210,7 @@ const DynamicModal = ({ config, onSave }) => {
           boxShadow: 24,
           p: 4,
         }}>
-          <h2 id="modal-title">Dynamic Modal</h2>
+          <h2 id="modal-title" className='text-gray-700'>Añadir acciones</h2>
           {config.filter(field => field.type).map((field) => renderField(field))}
           <Button variant="contained" onClick={handleSubmit} fullWidth>
             Submit
@@ -223,12 +218,9 @@ const DynamicModal = ({ config, onSave }) => {
         </Box>
       </Modal>
       {renderSelectorModal()}
+
     </div>
   );
 };
 
-function getvalue(value) {
-  const valuedata = localStorage.getItem('value') || '{}';
-  return JSON.parse(valuedata);
-}
 export default DynamicModal;

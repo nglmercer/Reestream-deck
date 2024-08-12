@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import socket, { emitMessage, onMessage, disconnectSocket } from './utils/socket';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -37,11 +37,11 @@ const VolumeSlider = ({ session, onChange }) => {
         max={100}
         sx={{
           width: '100%',
-          height: 20, 
+          height: 40, 
           mt: 2,
           '& .MuiSlider-thumb': {
-            width: 20,
-            height: 20,
+            width: 50,
+            height: 50,
             backgroundColor: '#4caf50',
             border: '3px solid #388e3c',
             transition: 'none',
@@ -50,13 +50,13 @@ const VolumeSlider = ({ session, onChange }) => {
             },
           },
           '& .MuiSlider-track': {
-            height: 50,
+            height: 40,
             borderRadius: 10,
             backgroundColor: '#81c784',
             transition: 'none',
           },
           '& .MuiSlider-rail': {
-            height: 20,
+            height: 40,
             borderRadius: 10,
             backgroundColor: '#c8e6c9',
             transition: 'none',
@@ -68,40 +68,34 @@ const VolumeSlider = ({ session, onChange }) => {
 };
 
 const AudioControl = () => {
-  const [socket, setSocket] = useState(null);
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3000');
-    setSocket(newSocket);
-
-    newSocket.on('audioData', (data) => {
+    onMessage('audioData', (data) => {
       setSessions(data.sessions);
     });
 
     return () => {
-      newSocket.disconnect();
+      console.log('Disconnecting socket...');
+      // disconnectSocket();
     };
   }, []);
 
   const changeVolume = (pid, volume) => {
-    if (socket) {
-      socket.emit('setVolume', { pid, volume });
-    }
+    console.log('changeVolume', pid, volume);
+    emitMessage('setVolume', { pid, volume });
   };
 
   const changeMasterVolume = (volume) => {
-    if (socket) {
-      socket.emit('setMasterVolume', volume);
-    }
+    emitMessage('setMasterVolume', volume);
   };
 
   return (
-    <Box>
+    <Box className="m-0 p-0 overflow-hidden">
       <Typography variant="h5" gutterBottom>Audio Control</Typography>
-      {sessions.map((session) => (
+      {sessions.map((session, index) => (
         <VolumeSlider
-          key={session.pid}
+          key={`${session.pid}-${index}`}
           session={session}
           onChange={(value) => changeVolume(session.pid, value / 100)}
         />

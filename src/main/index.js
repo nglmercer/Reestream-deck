@@ -34,7 +34,15 @@ io.on('connection', (socket) => {
       socket.emit('error', error.message);
     }
   });
-
+  socket.on('presskey', (key) => {
+    console.log('Keypressed:', key);
+    try {
+      keynut.keyboardController.parseAndExecuteKeyCommand(key);
+      socket.emit('keypressed', key);
+    } catch (error) {
+      socket.emit('error', error.message);
+    }
+  });
   // Event to set the volume of a specific session
   socket.on('setVolume', ({ pid, volume }) => {
     try {
