@@ -63,7 +63,7 @@ function MediaStreamSelector({ onStreamSelected }) {
         </select>
       </label>
 
-      <button onClick={handleStartStream}>Start Stream</button>
+      <button className='btn btn-primary' onClick={handleStartStream}>Start Stream</button>
     </div>
   );
 }

@@ -19,7 +19,7 @@ function ChatInterface({
         onChange={e => setRoomId(e.target.value)}
         placeholder="Enter Room ID"
       />
-      <button onClick={joinRoom}>Join Room</button>
+      <button className='btn btn-primary' onClick={joinRoom}>Join Room</button>
       <div>
         <h2>Connected Users:</h2>
         <ul>
@@ -40,7 +40,7 @@ function ChatInterface({
         onChange={e => setMessage(e.target.value)}
         placeholder="Type a message"
       />
-      <button onClick={sendMessage}>Send</button>
+      <button className='btn btn-primary' onClick={sendMessage}>Send</button>
     </div>
   );
 }
