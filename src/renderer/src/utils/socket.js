@@ -1,18 +1,30 @@
-// socket.js
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
+class SocketManager {
+  constructor() {
+    if (!SocketManager.instance) {
+      const socketUrl = `${window.location.protocol}//${window.location.hostname}:3000`; // URL relativa
+      this.socket = io(socketUrl); // Ajusta la URL según sea necesario
+      SocketManager.instance = this;
+    }
+    return SocketManager.instance;
+  }
 
-export const emitMessage = (eventName, data) => {
-  socket.emit(eventName, data);
-};
+  emitMessage(eventName, data) {
+    this.socket.emit(eventName, data);
+  }
 
-export const onMessage = (eventName, callback) => {
-  socket.on(eventName, callback);
-};
+  onMessage(eventName, callback) {
+    this.socket.on(eventName, callback);
+  }
 
-export const disconnectSocket = () => {
-  socket.disconnect();
-};
+  disconnectSocket() {
+    this.socket.disconnect();
+  }
+}
 
-export default socket;
+// Asegura que la misma instancia se reutiliza
+const socketManager = new SocketManager();
+Object.freeze(socketManager);
+
+export default socketManager;

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, ButtonGroup, ThemeProvider, createTheme } from '@mui/material';
 import AudioControl from './AudioControl';
 import Gridcontent from './keycontrol';
-import WebRTCComponent from './components/webRTC';
+import WebRTCChatRoom from './WebRTCChatRoom';
 import './assets/MainScreen.css'; 
 
 const tabs = [
@@ -65,7 +65,7 @@ const MainScreen = () => {
           </div>
           <div style={{ display: selectedTab === 1 ? 'block' : 'none' }}>
             <h2>{tabs[1].label}</h2>
-            <WebRTCComponent />
+            <WebRTCChatRoom />
             <p className="tip">
               Please try pressing <code>F12</code> to open the devTool
             </p>

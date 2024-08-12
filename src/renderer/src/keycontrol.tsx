@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { openDB } from 'idb';
 import GridComponent from './components/GridComponent';
 import Modalconfig from './modalconfig';
-import { emitMessage, onMessage, disconnectSocket } from './utils/socket';
+import socketManager from './utils/socket';
 const DB_NAME = 'myCustomDatabase';
 const STORE_NAME = 'customFormData';
 
@@ -11,7 +11,7 @@ const Gridcontent = () => {
   const [editorMode, setEditorMode] = useState(false);
 
   useEffect(() => {
-    onMessage('keypressed', (data) => {
+    socketManager.onMessage('keypressed', (data) => {
       console.log('Keypressed:', data);
     });
     async function loadItemsFromDB() {
@@ -88,7 +88,7 @@ const Gridcontent = () => {
       const keysToPress = data.value.map(item => Number(item.value));
   
       // Enviar todas las teclas a la vez
-      emitMessage('presskey', keysToPress);
+      socketManager.emitMessage('presskey', keysToPress);
     }
   }
   

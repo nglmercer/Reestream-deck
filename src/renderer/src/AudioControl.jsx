@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import socket, { emitMessage, onMessage, disconnectSocket } from './utils/socket';
+import socketManager from './utils/socket';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -71,7 +71,7 @@ const AudioControl = () => {
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
-    onMessage('audioData', (data) => {
+    socketManager.onMessage('audioData', (data) => {
       setSessions(data.sessions);
     });
 
@@ -83,11 +83,11 @@ const AudioControl = () => {
 
   const changeVolume = (pid, volume) => {
     console.log('changeVolume', pid, volume);
-    emitMessage('setVolume', { pid, volume });
+    socketManager.emitMessage('setVolume', { pid, volume });
   };
 
   const changeMasterVolume = (volume) => {
-    emitMessage('setMasterVolume', volume);
+    socketManager.emitMessage('setMasterVolume', volume);
   };
 
   return (

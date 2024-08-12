@@ -147,10 +147,11 @@ function createWindow() {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-    expressApp.use("qweqweqweqwe",express.static(join(__dirname, '../renderer/index.html')));
+    expressApp.use(express.static(join(__dirname, '../renderer/index.html')));
     console.log(join(__dirname, '../renderer/index.html'))
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    // mainWindow.loadURL(`http://localhost:3000`);
   }
 }
 console.log("qweqweqweqwe",join(__dirname, '../renderer/index.html'))
