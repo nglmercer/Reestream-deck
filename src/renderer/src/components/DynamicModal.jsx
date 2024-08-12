@@ -35,7 +35,7 @@ const DynamicModal = ({ config, onSave }) => {
       console.error('Database configuration not found');
       return;
     }
-
+  
     const db = await openDB(dbConfig.database, 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(dbConfig.objectStore)) {
@@ -43,9 +43,20 @@ const DynamicModal = ({ config, onSave }) => {
         }
       },
     });
-
-    await db.put(dbConfig.objectStore, data);
+  
+    const tx = db.transaction(dbConfig.objectStore, 'readwrite');
+    const store = tx.objectStore(dbConfig.objectStore);
+  
+    const count = await store.count();
+    if (!data.id) {
+      data.id = count; // Asigna el ID con base en la cantidad actual de elementos
+    }
+  
+    await store.add(data);
+    await tx.done;
   };
+  
+  
 
   const handleOptionToggle = (option) => {
     const currentIndex = tempSelection.findIndex(item => item.value === option.value);
