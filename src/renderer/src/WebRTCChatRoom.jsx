@@ -42,22 +42,14 @@ function WebRTCChatRoom() {
     localStream.current = stream;
     const videoElement = document.getElementById('localVideo');
     if (videoElement) {
-      videoElement.srcObject = stream;
+        videoElement.srcObject = stream;
     }
-  
-    // Notificar a los demás usuarios que ahora estás transmitiendo video
-    Object.values(dataChannels.current).forEach(channel => {
-      if (channel.readyState === 'open') {
-        channel.send(JSON.stringify({ type: 'video-started', userId: socket.id }));
-      }
-    });
-  
+
     // Añadir el stream local al PeerConnection existente o futuro
     Object.values(peerConnections.current).forEach(pc => {
-      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
     });
-  };
-  
+};
   const handleAllUsers = (users) => {
     console.log('All users in room:', users);
     setConnectedUsers(users);
@@ -114,24 +106,34 @@ function WebRTCChatRoom() {
 
 const setupDataChannel = (channel, userId) => {
   channel.onopen = () => console.log(`Data channel opened with ${userId}`);
+
   channel.onmessage = event => {
-    const message = JSON.parse(event.data);
+    let message;
     
+    try {
+      message = JSON.parse(event.data);
+    } catch (error) {
+      console.log(`Received non-JSON message from ${userId}:`, event.data);
+      setMessages(prev => [...prev, { sender: userId, text: event.data }]);
+      return;
+    }
+
     if (message.type === 'video-started') {
       console.log(`User ${message.userId} started transmitting video`);
       // Crear el elemento de video si no existe
-      const videoElement = document.getElementById(`remoteVideo-${message.userId}`);
+      let videoElement = document.getElementById(`remoteVideo-${message.userId}`);
       if (!videoElement) {
-        const newVideoElement = document.createElement('video');
-        newVideoElement.id = `remoteVideo-${message.userId}`;
-        newVideoElement.autoplay = true;
-        document.body.appendChild(newVideoElement);
+        videoElement = document.createElement('video');
+        videoElement.id = `remoteVideo-${message.userId}`;
+        videoElement.autoplay = true;
+        document.body.appendChild(videoElement);
       }
     } else {
       console.log(`Received message from ${userId}:`, message.text);
       setMessages(prev => [...prev, { sender: userId, text: message.text }]);
     }
   };
+
   dataChannels.current[userId] = channel;
 };
 
@@ -190,6 +192,7 @@ const closePeerConnection = (userId) => {
     } else {
       console.warn(`No local stream available for user ${userId}`);
     }
+  
     // Configuración de eventos
     pc.onicecandidate = (event) => {
       if (event.candidate) {
@@ -202,26 +205,26 @@ const closePeerConnection = (userId) => {
         });
       }
     };
+  
     pc.ontrack = (event) => {
       console.log('Track received from:', userId, event);
       remoteStreams.current[userId] = event.streams[0];
-    
       const videoElement = document.getElementById(`remoteVideo-${userId}`);
       if (videoElement) {
         videoElement.srcObject = event.streams[0];
-        console.log(`Remote stream set for user ${userId} on element ${videoElement.id}`);
       } else {
-        // Crear y añadir el elemento de video si no existe
-        const newVideoElement = document.createElement('video');
-        newVideoElement.id = `remoteVideo-${userId}`;
-        newVideoElement.autoplay = true;
-        newVideoElement.srcObject = event.streams[0];
-        document.body.appendChild(newVideoElement);
-        console.log(`New video element created for user ${userId}`);
+        console.warn(`No video element found for remote user ${userId}`);
       }
+      Object.values(dataChannels.current).forEach(channel => {
+        if (channel.readyState === 'open') {
+          channel.send(JSON.stringify({ type: 'video-started', userId: socket.id }));
+        }
+      });
+      Object.values(peerConnections.current).forEach(pc => {
+        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+          stream.getTracks().forEach(track => pc.addTrack(track, stream));
+      });
     };
-    
-    
   
     pc.ondatachannel = (event) => {
       console.log('Data channel received from:', userId);
@@ -256,24 +259,23 @@ const closePeerConnection = (userId) => {
     }
   };
   return (
-<div>
-  <MediaStreamSelector onStreamSelected={handleStreamSelected} />
-  <video id="localVideo" autoPlay muted></video>
-  {connectedUsers.map(userId => (
-    <video key={userId} id={`remoteVideo-${userId}`} autoPlay></video>
-  ))}
-  <ChatInterface
-    roomId={roomId}
-    setRoomId={setRoomId}
-    message={message}
-    setMessage={setMessage}
-    messages={messages}
-    connectedUsers={connectedUsers}
-    joinRoom={joinRoom}
-    sendMessage={sendMessage}
-  />
-</div>
-
+    <div>
+      <MediaStreamSelector onStreamSelected={handleStreamSelected} />
+      <video id="localVideo" autoPlay muted></video>
+      {connectedUsers.map(userId => (
+        <video key={userId} id={`remoteVideo-${userId}`} autoPlay></video>
+      ))}
+      <ChatInterface
+        roomId={roomId}
+        setRoomId={setRoomId}
+        message={message}
+        setMessage={setMessage}
+        messages={messages}
+        connectedUsers={connectedUsers}
+        joinRoom={joinRoom}
+        sendMessage={sendMessage}
+      />
+    </div>
   );
 }
 
