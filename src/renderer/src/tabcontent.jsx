@@ -4,8 +4,8 @@ import AudioControl from './AudioControl';
 import Gridcontent from './keycontrol';
 import Modalconfig from './modalconfig';
 import './assets/MainScreen.css'; 
-// import Dropitems from './components/dropitems/App';
-
+import VideoStream from './components/Broadcaster';
+import WebRTCComponent from './components/webRTC';
 const tabs = [
   { id: 'tab1', label: 'Control de Audio' },
   { id: 'tab2', label: 'Configurar Acciones' },
@@ -44,13 +44,19 @@ const MainScreen = () => {
       case 0:
         return <AudioControl />;
       case 1:
-        return <Modalconfig />;
+        return (
+          <>
+          <WebRTCComponent />
+            <p className="tip">
+              Please try pressing <code>F12</code> to open the devTool
+            </p>
+          </>
+        );
       case 2:
         return (
           <>
             <Gridcontent />
             <p className="tip">
-              Please try pressing <code>F12</code> to open the devTool
             </p>
           </>
         );

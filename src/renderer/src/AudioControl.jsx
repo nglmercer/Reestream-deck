@@ -76,7 +76,7 @@ const AudioControl = () => {
     });
 
     return () => {
-      console.log('Disconnecting socket...');
+      console.log('AudioControl');
       // disconnectSocket();
     };
   }, []);

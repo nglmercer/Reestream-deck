@@ -83,18 +83,15 @@ const Gridcontent = () => {
   };
   function handleCallback(data) {
     console.log('callback 1234124124', data, data.value);
-    // console.log('callback 1234124124', data.value[0]);
-
+  
     if (data.value.length > 0) {
-
-          data.value.forEach( (item) => {
-            console.log(item.label);
-            const value = Number(item.value);
-    emitMessage('presskey',value);
-    
-  });
+      const keysToPress = data.value.map(item => Number(item.value));
+  
+      // Enviar todas las teclas a la vez
+      emitMessage('presskey', keysToPress);
     }
   }
+  
   return (
     <div>
       <h1>React Grid Layout con Modo Editor y Papelera</h1>

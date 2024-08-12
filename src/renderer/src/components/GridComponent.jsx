@@ -36,7 +36,6 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
     onDelete(id);
     setLocalItems(localItems.filter(item => item.id !== id));
   };
-
   return (
     <div className="grid-container">
       <GridLayout
@@ -51,9 +50,13 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
         isDraggable={editorMode}
         isResizable={editorMode}
       >
-        {localItems.map((item) => (
-          <div key={item.id} className="grid-item-wrapper">
-                          {editorMode && (
+        {localItems.map((item) => {
+          // Aquí calculas `keysToPress` para cada `item`
+          const keysToPress = item.value.map(item => item.label).join(' + ');
+
+          return (
+            <div key={item.id} className="grid-item-wrapper">
+              {editorMode && (
                 <button
                   className="delete-button"
                   onClick={(e) => handleDelete(e, item.id)}
@@ -61,19 +64,20 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
                   X
                 </button>
               )}
-            <div className="grid-item">
-              <div className="item-content">{item.content}</div>
-              {callback && (
-                <button
-                  className="add-button btn btn-primary"
-                  onClick={() => callback(item)}
-                >
-                  {item.id}
-                </button>
-              )}
+              <div className="grid-item">
+                <div className="item-content">{item.content}</div>
+                {callback && (
+                  <button
+                    className="add-button btn btn-primary"
+                    onClick={() => callback(item)}
+                  >
+                    {keysToPress}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </GridLayout>
     </div>
   );
