@@ -42,13 +42,17 @@ function WebRTCChatRoom() {
     localStream.current = stream;
     const videoElement = document.getElementById('localVideo');
     if (videoElement) {
-        videoElement.srcObject = stream;
+      videoElement.srcObject = stream;
     }
-
+    Object.values(dataChannels.current).forEach(channel => {
+      if (channel.readyState === 'open') {
+        channel.send(JSON.stringify({ type: 'video-started', userId: socket.id }));
+      }
+    });
     // Añadir el stream local al PeerConnection existente o futuro
     Object.values(peerConnections.current).forEach(pc => {
-        stream.getTracks().forEach(track => pc.addTrack(track, stream));
-    });
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+  });
 };
   const handleAllUsers = (users) => {
     console.log('All users in room:', users);
@@ -120,13 +124,20 @@ const setupDataChannel = (channel, userId) => {
 
     if (message.type === 'video-started') {
       console.log(`User ${message.userId} started transmitting video`);
-      // Crear el elemento de video si no existe
-      let videoElement = document.getElementById(`remoteVideo-${message.userId}`);
-      if (!videoElement) {
-        videoElement = document.createElement('video');
-        videoElement.id = `remoteVideo-${message.userId}`;
-        videoElement.autoplay = true;
-        document.body.appendChild(videoElement);
+      // Solicitar una nueva oferta al remitente
+      const pc = peerConnections.current[message.userId];
+      if (pc) {
+        pc.createOffer()
+          .then(offer => pc.setLocalDescription(offer))
+          .then(() => {
+            socket.emit('webrtc', {
+              type: 'offer',
+              data: pc.localDescription,
+              to: message.userId,
+              roomId
+            });
+          })
+          .catch(error => console.error('Error creating offer:', error));
       }
     } else {
       console.log(`Received message from ${userId}:`, message.text);
@@ -222,7 +233,6 @@ const closePeerConnection = (userId) => {
       });
       Object.values(peerConnections.current).forEach(pc => {
         stream.getTracks().forEach(track => pc.addTrack(track, stream));
-          stream.getTracks().forEach(track => pc.addTrack(track, stream));
       });
     };
   
