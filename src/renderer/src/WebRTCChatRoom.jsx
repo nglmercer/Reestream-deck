@@ -232,7 +232,7 @@ const closePeerConnection = (userId) => {
         }
       });
       Object.values(peerConnections.current).forEach(pc => {
-        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+          console.log('Adding tracks to peer connection:', pc);
       });
     };
   
