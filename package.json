@@ -1,9 +1,9 @@
 {
-  "name": "my-app",
-  "version": "1.0.0",
-  "description": "An Electron application with React",
+  "name": "reestream-deck",
+  "version": "1.0.1",
+  "description": "App for streaming and controlling a deck of cards",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "melserpe",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",

@@ -3,8 +3,12 @@ import { io } from 'socket.io-client';
 class SocketManager {
   constructor() {
     if (!SocketManager.instance) {
-      const socketUrl = `${window.location.protocol}//${window.location.hostname}:3000`; // URL relativa
-      this.socket = io(socketUrl); // Ajusta la URL según sea necesario
+      const socketUrl = `${window.location.protocol}//${window.location.hostname}:3000`;
+      if (!socketUrl.startsWith('file')) {
+      this.socket = io(socketUrl); 
+      } else {
+        this.socket = io('http://localhost:3000');
+      }
       SocketManager.instance = this;
     }
     return SocketManager.instance;

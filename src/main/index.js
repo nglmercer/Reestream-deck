@@ -202,8 +202,8 @@ function createWindow() {
     expressApp.use(express.static(join(__dirname, '../renderer/index.html')));
     console.log(join(__dirname, '../renderer/index.html'))
   } else {
-    // mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-    mainWindow.loadURL(`${serverisHttps}://localhost:${Port}`);
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    // mainWindow.loadURL(`${serverisHttps}://localhost:${Port}`);
   }
 }
 console.log("qweqweqweqwe",join(__dirname, '../renderer/index.html'))
