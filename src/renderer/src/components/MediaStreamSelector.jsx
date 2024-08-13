@@ -50,26 +50,27 @@ function MediaStreamSelector({ onStreamSelected }) {
   };
 
   return (
-    <div className="p-4 rounded-lg shadow">
-      <div className="mb-4">
+    <div className="flex flex-wrap ">
+      <div className="card bg-base-100 w-4/5 max-w-xl shadow-xl">
+      <div className="card-body">
         <label className="block mb-2 font-bold">
-          Stream Type:
+          Transmitir fuentes:
           <select 
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             value={isScreenSharing ? 'screen' : 'camera'}
             onChange={(e) => setIsScreenSharing(e.target.value === 'screen')}
           >
-            <option value="camera">Camera and Microphone</option>
-            <option value="screen">Screen Share</option>
+            <option value="camera">Camara y Micrófono</option>
+            <option value="screen">Transmitir Pantalla</option>
           </select>
         </label>
       </div>
 
       {!isScreenSharing && (
         <>
-          <div className="mb-4">
+          <div className="mockup-code m-4 p-4">
             <label className="block mb-2 font-bold">
-              Video Source:
+              Seleccionar fuente de video:
               <select 
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 value={selectedVideoDevice} 
@@ -84,9 +85,9 @@ function MediaStreamSelector({ onStreamSelected }) {
             </label>
           </div>
 
-          <div className="mb-4">
+          <div className="mockup-code m-4 p-4">
             <label className="block mb-2 font-bold">
-              Audio Source:
+              Seleccionar fuente de audio:
               <select 
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 value={selectedAudioDevice} 
@@ -108,20 +109,20 @@ function MediaStreamSelector({ onStreamSelected }) {
           <label className="flex items-center">
             <input
               type="checkbox"
-              className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="checkbox checkbox-lg"
               checked={includeAudioInScreenShare}
               onChange={(e) => setIncludeAudioInScreenShare(e.target.checked)}
             />
-            <span className="ml-2">Include audio in screen share</span>
+            <span className="ml-2">Incluir audio en pantalla compartida</span>
           </label>
         </div>
       )}
-
+      </div>
       <button 
-        className="w-full px-4 py-2 text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none focus:shadow-outline-indigo active:bg-indigo-800"
+        className="btn btn-primary btn-lg"
         onClick={handleStartStream}
       >
-        Start Stream
+        Transmitir ahora
       </button>
     </div>
   );

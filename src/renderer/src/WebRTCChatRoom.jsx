@@ -270,11 +270,6 @@ const closePeerConnection = (userId) => {
   };
   return (
     <div>
-      <MediaStreamSelector onStreamSelected={handleStreamSelected} />
-      <video id="localVideo" autoPlay muted></video>
-      {connectedUsers.map(userId => (
-        <video key={userId} id={`remoteVideo-${userId}`} autoPlay></video>
-      ))}
       <ChatInterface
         roomId={roomId}
         setRoomId={setRoomId}
@@ -285,6 +280,13 @@ const closePeerConnection = (userId) => {
         joinRoom={joinRoom}
         sendMessage={sendMessage}
       />
+  <div class="divider divider-neutral">chat room</div>
+
+            <MediaStreamSelector onStreamSelected={handleStreamSelected} />
+      <video id="localVideo" autoPlay muted></video>
+      {connectedUsers.map(userId => (
+        <video key={userId} id={`remoteVideo-${userId}`} autoPlay></video>
+      ))}
     </div>
   );
 }

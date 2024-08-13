@@ -7,8 +7,8 @@ import './assets/MainScreen.css';
 
 const tabs = [
   { id: 'tab1', label: 'Control de Audio' },
-  { id: 'tab2', label: 'Configurar Acciones' },
-  { id: 'tab3', label: 'keyboard test' },
+  { id: 'tab2', label: 'WebRTC Chat Room' },
+  { id: 'tab3', label: 'Control de Acciones' },
 ];
 
 const MainScreen = () => {

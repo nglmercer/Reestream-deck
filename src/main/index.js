@@ -4,21 +4,73 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import express from 'express';
 import http from 'http';
+import https from 'https';
 import socketIo from 'socket.io';
 import  AudioController  from './audioController';
 import keynut from './keynut';
+import fs from 'fs';
 const expressApp = express();
-const server = http.createServer(expressApp);
-
-const io = socketIo(server, {
-  cors: {
-    origin: "*", // Permite conexiones desde cualquier origen
-    methods: ["GET", "POST"]
+const Port = 3000;
+let server;
+let io;
+let privateKey, certificate, credentials;
+let serverisHttps = "http";
+if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  console.log("SSL credentials not found. Starting HTTP server...");
+    server = http.createServer(app);
+  io = socketIo(server, {
+    cors: {
+      origin: "*", 
+      methods: ["GET", "POST"]
+    }
+  });
+  server.listen(Port, () => {
+    console.log('Socket.IO server listening on port 3000');
+  });
+  serverisHttps = "http";
+} else {
+  try {
+    // privateKey = fs.readFileSync(join(__dirname, '../../credentials/key.pem'), 'utf8');
+    console.log(join(__dirname, '../../credentials/key.pem'));
+    console.log(join(__dirname, '../../credentials/cert.pem'));
+    privateKey = fs.readFileSync(join(__dirname, '../../credentials/key.pem'), 'utf8');
+    certificate = fs.readFileSync(join(__dirname, '../../credentials/cert.pem'), 'utf8');
+    credentials = { key: privateKey, cert: certificate };
+  
+    // Si las credenciales existen, inicia el servidor en HTTPS
+    server = https.createServer(credentials, expressApp);
+    io = socketIo(server, {
+      cors: {
+        origin: "*", // Permite conexiones desde cualquier origen
+        methods: ["GET", "POST"]
+      }
+    });
+    server.listen(Port, () => {
+      console.log('Socket.IO server listening on port', Port);
+    });
+    serverisHttps = "https";
+    console.log("SSL credentials found. Starting HTTPS server...");
+  } catch (error) {
+    console.log("SSL credentials not found. Starting HTTP server...");
+    
+    // Si no hay credenciales, inicia el servidor en HTTP
+    server = http.createServer(app);
+    io = socketIo(server, {
+      cors: {
+        origin: "*", // Permite conexiones desde cualquier origen
+        methods: ["GET", "POST"]
+      }
+    });
+    server.listen(Port, () => {
+      console.log('Socket.IO server listening on port 3000');
+    });
+    serverisHttps = "http";
   }
-});
-server.listen(3000, () => {
-  console.log('Socket.IO server listening on port 3000');
-});
+}
+
+
+
+
 const audioController = new AudioController();
 const UPDATE_INTERVAL = 5000;
 
@@ -150,8 +202,8 @@ function createWindow() {
     expressApp.use(express.static(join(__dirname, '../renderer/index.html')));
     console.log(join(__dirname, '../renderer/index.html'))
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-    // mainWindow.loadURL(`http://localhost:3000`);
+    // mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadURL(`${serverisHttps}://localhost:${Port}`);
   }
 }
 console.log("qweqweqweqwe",join(__dirname, '../renderer/index.html'))

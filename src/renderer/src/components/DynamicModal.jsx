@@ -203,7 +203,7 @@ const DynamicModal = ({ config, onSave }) => {
 
   return (
     <div>
-      <Button onClick={handleOpen} variant='contained' sx={{ mt: 2 }}>Open Modal</Button>
+      <Button onClick={handleOpen} variant='contained' sx={{ mt: 2 }}>Añadir Acciones y atajos</Button>
       <Modal
         open={open}
         onClose={handleClose}

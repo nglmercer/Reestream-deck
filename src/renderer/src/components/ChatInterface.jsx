@@ -11,9 +11,9 @@ function ChatInterface({
   sendMessage
 }) {
   return (
-    <div className="bg-gray-400/10 ">
-      <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">WebRTC Chat Room</h1>
-      <div className="flex mb-4">
+    <div className="card bg-base-100 shadow-xl m-4 p-4">
+      <h1 className="text-3xl font-bold flex m-4 text-center text-blue-600">Conectarse a un chat WebRTC</h1>
+      <div className="flex m-2">
         <input
           type="text"
           value={roomId}
@@ -28,7 +28,7 @@ function ChatInterface({
           Join Room
         </button>
       </div>
-      <div className="mb-6">
+      <div className="flex m-4">
         <h2 className="text-xl font-semibold mb-2 text-sky-700">Connected Users:</h2>
         <ul className="bg-gray-400/10 rounded-lg p-3 shadow">
           {connectedUsers.map(user => (
@@ -36,7 +36,7 @@ function ChatInterface({
           ))}
         </ul>
       </div>
-      <div className="mb-6">
+      <div className="flex m-4">
         <h2 className="text-xl font-semibold mb-2 text-sky-700">Messages:</h2>
         <ul className="bg-gray-400/10 rounded-lg p-3 shadow max-h-60 overflow-y-auto">
           {messages.map((msg, index) => (

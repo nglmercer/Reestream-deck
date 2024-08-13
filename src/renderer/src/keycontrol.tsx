@@ -94,7 +94,7 @@ const Gridcontent = () => {
   
   return (
     <div>
-      <h1>React Grid Layout con Modo Editor y Papelera</h1>
+      <h1>---------------------------------</h1>
       <Modalconfig />
       <button className='btn btn-primary' onClick={() => setEditorMode(!editorMode)}>
         {editorMode ? 'Desactivar Modo Editor' : 'Activar Modo Editor'}
