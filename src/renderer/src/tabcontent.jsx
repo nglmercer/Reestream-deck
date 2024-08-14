@@ -3,6 +3,7 @@ import { Button, ButtonGroup, ThemeProvider, createTheme } from '@mui/material';
 import AudioControl from './AudioControl';
 import Gridcontent from './keycontrol';
 import WebRTCChatRoom from './WebRTCChatRoom';
+import ChatRoomContainer from './ChatRoomContainer';
 import './assets/MainScreen.css'; 
 
 const tabs = [
@@ -12,11 +13,16 @@ const tabs = [
 ];
 
 const MainScreen = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(() => {
+    const savedTab = parseInt(localStorage.getItem('selectedTab') || '0', 10);
+    console.log("Initial selectedTab", savedTab);
+    return savedTab;
+  });
   const [darkTheme, setDarkTheme] = useState(false);
 
   useEffect(() => {
     const savedTab = parseInt(localStorage.getItem('selectedTab') || '0', 10);
+    console.log("selectedTab", savedTab);
     setSelectedTab(savedTab);
   }, []);
 
@@ -65,7 +71,7 @@ const MainScreen = () => {
           </div>
           <div style={{ display: selectedTab === 1 ? 'block' : 'none' }}>
             <h2>{tabs[1].label}</h2>
-            <WebRTCChatRoom />
+            <ChatRoomContainer />
             <p className="tip">
               Please try pressing <code>F12</code> to open the devTool
             </p>
