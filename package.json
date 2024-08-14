@@ -32,6 +32,7 @@
     "muuri": "^0.9.5",
     "muuri-react": "^3.1.7",
     "node-audio-volume-mixer": "^1.0.3",
+    "qrcode": "^1.5.4",
     "react-beautiful-dnd": "^13.1.1",
     "react-color": "^2.19.3",
     "react-grid-layout": "^1.4.4",

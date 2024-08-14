@@ -280,7 +280,7 @@ const closePeerConnection = (userId) => {
         joinRoom={joinRoom}
         sendMessage={sendMessage}
       />
-  <div class="divider divider-neutral">chat room</div>
+  <div className="divider divider-neutral">chat room</div>
 
             <MediaStreamSelector onStreamSelected={handleStreamSelected} />
       <video id="localVideo" autoPlay muted></video>

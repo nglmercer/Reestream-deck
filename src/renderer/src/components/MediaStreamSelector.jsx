@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function MediaStreamSelector({ onStreamSelected }) {
   const [videoDevices, setVideoDevices] = useState([]);
