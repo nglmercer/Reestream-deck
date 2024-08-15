@@ -27,7 +27,7 @@ function WebRTCChatRoom() {
       socket.off('user-connected', handleUserConnected);
       socket.off('user-disconnected', handleUserDisconnected);
       socket.off('webrtc', handleWebRTCSignal);
-      mediaManager.stopLocalStream(); // Detener el stream local al desmontar el componente
+      mediaManager.stopLocalStream();
     };
   }, []);
 
@@ -42,7 +42,6 @@ function WebRTCChatRoom() {
         channel.send(JSON.stringify({ type: 'video-started', userId: socket.id }));
       }
     });
-    // Añadir el stream local al PeerConnection existente o futuro
     Object.values(peerConnections.current).forEach(pc => {
       mediaManager.addTrackToPeerConnection(pc);
     });
@@ -76,7 +75,7 @@ function WebRTCChatRoom() {
     try {
       if (type === 'offer') {
         if (pc.signalingState !== 'stable') {
-          console.warn('Skipping offer because signalingState is not stable:', pc.signalingState);
+          console.log('Skipping offer because signalingState is not stable:', pc.signalingState);
           return;
         }
         await pc.setRemoteDescription(new RTCSessionDescription(data));
@@ -85,7 +84,7 @@ function WebRTCChatRoom() {
         socket.emit('webrtc', { type: 'answer', data: answer, to: from, roomId });
       } else if (type === 'answer') {
         if (pc.signalingState !== 'have-local-offer') {
-          console.warn('Skipping answer because signalingState is not have-local-offer:', pc.signalingState);
+          console.log('Skipping answer because signalingState is not have-local-offer:', pc.signalingState);
           return;
         }
         await pc.setRemoteDescription(new RTCSessionDescription(data));
@@ -93,7 +92,7 @@ function WebRTCChatRoom() {
         if (pc.signalingState === 'stable' || pc.signalingState === 'have-remote-offer') {
           await pc.addIceCandidate(new RTCIceCandidate(data));
         } else {
-          console.warn('Skipping ICE candidate because signalingState is not appropriate:', pc.signalingState);
+          console.log('Skipping ICE candidate because signalingState is not appropriate:', pc.signalingState);
         }
       }
     } catch (error) {
@@ -129,7 +128,7 @@ function WebRTCChatRoom() {
       if (videoElement) {
         videoElement.srcObject = remoteStream;
       } else {
-        console.warn(`No video element found for remote user ${userId}`);
+        console.log(`No video element found for remote user ${userId}`);
       }
     };
   
@@ -163,14 +162,6 @@ function WebRTCChatRoom() {
   
       if (message.type === 'video-started') {
         console.log(`User ${message.userId} started transmitting video`);
-        // Solicitar una nueva oferta al remitente
-        // const fakeStream = createFakeVideoStream();
-        // if (connectedUsers.length <= 1) {
-        //   Object.values(peerConnections.current).forEach(pc => {
-        //     console.log("addTrack", fakeStream.getTracks());
-        //     fakeStream.getTracks().forEach(track => pc.addTrack(track, fakeStream));
-        //   });
-        // }
         const pc = peerConnections.current[message.userId];
         if (pc) {
           pc.createOffer()

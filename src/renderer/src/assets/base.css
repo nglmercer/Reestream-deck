@@ -72,7 +72,7 @@ ul {
 }
 
 
-.grid-item:hover .delete-button,
+
 .grid-item:hover .add-button {
   display: inline-block;
 }
