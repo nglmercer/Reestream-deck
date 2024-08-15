@@ -43,3 +43,13 @@ $ npm run build:linux
 3. Preview control macro deck
 - ![image](https://github.com/user-attachments/assets/bb03ffd2-e57b-4651-8907-f3de14dc811e)
 
+### Roadmap
+- Add Notes to the deck
+1. create a new note
+2. edit a note
+3. delete a note
+4. Read a note
+- Add Api to the deck
+1. Create a new serverapi to listen to the server
+2. resend notes to socket
+

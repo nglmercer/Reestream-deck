@@ -242,7 +242,6 @@ function createWindow() {
 });
 }
 
-console.log("qweqweqweqwe",join(__dirname, '../renderer/index.html'))
 
 expressApp.use(express.static(join(__dirname, '../renderer')));
 expressApp.get('*', (req, res) => {

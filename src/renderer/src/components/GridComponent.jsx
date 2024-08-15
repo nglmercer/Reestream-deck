@@ -114,10 +114,10 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
         preventCollision={false}
         isDraggable={editorMode}
         isResizable={false}
-      >
+        >
         {localItems.slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage).map((item) => (
-          <div key={item.id} className={`grid-item-wrapper ${item.content ? 'occupied' : 'empty'}`}>
-            <div className="grid-item">
+          <div key={item.id} className={`grid-item-wrapper ${item.content ? 'occupied' : 'empty' }`}>
+            <div className="grid-item text-white font-bold py-2 px-4 rounded" style={{ backgroundColor: item.color }}>
               <div className="item-content">{item.content}</div>
               {callback && item.content && (
                 <GridButton 
@@ -125,7 +125,6 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
                   callback={() => callback(item)}
                   label="Delete"
                   deleteCallback={(e) => handleDelete(e, item.id)}
-                  color="blue"
                   showDeleteButton={editorMode}
                 />
               )}
@@ -135,8 +134,8 @@ const GridComponent = ({ items, onReorder, onDelete, callback, editorMode = fals
       </GridLayout>
 
       <div className="pagination-controls">
-        <GridButton text="Anterior" callback={handlePrevPage} color="btn-secondary" />
-        <GridButton text="Siguiente" callback={handleNextPage} color="btn-secondary" />
+        <button onClick={handlePrevPage} className="btn btn-secondary" > pestaña anterior</button>
+        <button onClick={handleNextPage} className="btn btn-secondary" > siguiente pestaña</button>
       </div>
     </div>
   );

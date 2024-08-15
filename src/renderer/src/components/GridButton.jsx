@@ -1,6 +1,5 @@
 import React from 'react';
-
-const GridButton = ({ text, callback, label, color, deleteCallback, showDeleteButton }) => {
+const GridButton = ({ text, callback, label, deleteCallback, showDeleteButton }) => {
   const handleClick = (e) => {
     if (callback) {
       callback();
@@ -15,12 +14,10 @@ const GridButton = ({ text, callback, label, color, deleteCallback, showDeleteBu
   };
 
   return (
-    <div className="grid-button-container">
-      <div className={`grid-button ${color} btn btn-primary`}>
-        <button onClick={handleClick}>{text}</button>
-      </div>
+    <div className="grid-button-container" >
+        <button className={`grid-button btn btn-primary`} onClick={handleClick}>{text}</button>
       {deleteCallback && showDeleteButton && (
-        <button className="delete-button" onClick={handleDelete}>
+        <button variant="destructive" className="delete-button absolute top-0 right-0 " onClick={handleDelete}>
           {label}
         </button>
       )}
