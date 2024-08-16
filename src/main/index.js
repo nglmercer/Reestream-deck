@@ -8,9 +8,16 @@ import https from 'https';
 import socketIo from 'socket.io';
 import  AudioController  from './audioController';
 import keynut from './keynut';
-import fs from 'fs';
 import { showQRModal } from './qrModal';
+import path from 'path';
+import FileOpener from './FileOpener';
+import cors from 'cors';
+import fs from 'fs';
+const fileOpener = new FileOpener();
+console.log(fileOpener.getAvailableAppIdentifiers());
+fileOpener.openApplication('browser')
 const expressApp = express();
+expressApp.use(cors());
 const Port = 3000;
 const os = require('os');
 const QRCode = require('qrcode');
@@ -42,6 +49,9 @@ if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
   });
   server.listen(Port, () => {
     console.log('Socket.IO server listening on port 3000');
+  });
+  expressApp.listen(Port+1, () => {
+    console.log('Express server listening on port 3000');
   });
   serverisHttps = "http";
 } else {
@@ -247,8 +257,34 @@ expressApp.use(express.static(join(__dirname, '../renderer')));
 expressApp.get('*', (req, res) => {
   res.sendFile(join(__dirname, '../renderer/index.html'));
 });
+expressApp.use(express.json());
 
-console.log("qweqweqweqwe",join(__dirname, '../renderer/index.html'))
+expressApp.post('/file-info', (req, res) => {
+  const { path: filePath } = req.body;
+  console.log("filePath",filePath)
+  openfile(filePath);
+  fs.stat(filePath, (err, stats) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error obtaining file information');
+      return;
+    }
+
+    const fileDetails = {
+      size: stats.size,
+      createdAt: stats.birthtime,
+      modifiedAt: stats.mtime,
+      fileType: path.extname(filePath)
+    };
+
+    res.json(fileDetails);
+  });
+});
+function openfile(path) {
+  fileOpener.openDefault(path);
+  console.log("openfile",path)
+}
+console.log("join",join(__dirname, '../renderer/index.html'))
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

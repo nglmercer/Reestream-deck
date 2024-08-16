@@ -6,10 +6,13 @@ import WebRTCChatRoom from './WebRTCChatRoom';
 import ChatRoomContainer from './ChatRoomContainer';
 import './assets/MainScreen.css'; 
 import './assets/grid.css';
+import IndexedDBManager from './datamanager/IndexedDBManager';
+import FileUploader from './datamanager/FileUploader';
 const tabs = [
   { id: 'tab1', label: 'Control de Audio' },
   { id: 'tab2', label: 'WebRTC Chat Room' },
   { id: 'tab3', label: 'Control de Acciones' },
+  { id: 'tab4', label: 'Settings' },
 ];
 
 const MainScreen = () => {
@@ -43,7 +46,21 @@ const MainScreen = () => {
       mode: darkTheme ? 'dark' : 'light',
     },
   });
+  const handleFileInfo = (fileDetails) => {
+    console.log('File Details:', fileDetails);
 
+    // Aquí puedes enviar la información del archivo al backend o hacer más procesamiento
+    fetch('http://localhost:3001/file-info', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fileDetails),
+    })
+      .then(response => console.log('Success:', response))
+      .then(data => console.log('Success:', data))
+      .catch(error => console.error('Error:', error));
+  };
   return (
     <ThemeProvider theme={theme}>
       <div className="parent">
@@ -77,9 +94,14 @@ const MainScreen = () => {
             </p>
           </div>
           <div style={{ display: selectedTab === 2 ? 'block' : 'none' }}>
+              <IndexedDBManager />
             <h2>{tabs[2].label}</h2>
             <Gridcontent />
             <p className="tip"></p>
+          </div>
+          <div style={{ display: selectedTab === 3 ? 'block' : 'none' }}>
+            <h2>{tabs[3].label}</h2>
+            <FileUploader onFileInfo={handleFileInfo} />
           </div>
         </div>
       </div>
