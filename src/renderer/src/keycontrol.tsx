@@ -3,7 +3,7 @@ import { openDB } from 'idb';
 import GridComponent from './components/GridComponent';
 import Modalconfig from './modalconfig';
 import socketManager from './utils/socket';
-
+import { Button } from '@mui/material';
 const DB_NAME = 'myCustomDatabase';
 const STORE_NAME = 'customFormData';
 
@@ -96,19 +96,21 @@ const Gridcontent = () => {
   };
 
   return (
-    <div>
-      <h1>---------------------------------</h1>
-      <Modalconfig onSave={handleSave} />
-      <button className='btn btn-primary' onClick={() => setEditorMode(!editorMode)}>
+    <div className='cssportal-grid'>
+      <div id="div1">      <Modalconfig onSave={handleSave} />
+</div>
+      <div id="div2">      <Button variant='contained' onClick={() => setEditorMode(!editorMode)}>
         {editorMode ? 'Desactivar Modo Editor' : 'Activar Modo Editor'}
-      </button>
-      <GridComponent
+      </Button></div>
+      <div id="div3">      <GridComponent
         items={items}
         onReorder={handleReorder}
         onDelete={handleDelete}
         editorMode={editorMode}
         callback={handleCallback}
-      />
+      /></div>
+
+
     </div>
   );
 };

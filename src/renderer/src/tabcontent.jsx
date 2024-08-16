@@ -5,7 +5,7 @@ import Gridcontent from './keycontrol';
 import WebRTCChatRoom from './WebRTCChatRoom';
 import ChatRoomContainer from './ChatRoomContainer';
 import './assets/MainScreen.css'; 
-
+import './assets/grid.css';
 const tabs = [
   { id: 'tab1', label: 'Control de Audio' },
   { id: 'tab2', label: 'WebRTC Chat Room' },

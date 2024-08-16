@@ -38,7 +38,7 @@ const DynamicModal = ({ config, onSave }) => {
       console.error('Database configuration not found');
       return;
     }
-
+  
     const db = await openDB(dbConfig.database, 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(dbConfig.objectStore)) {
@@ -46,18 +46,24 @@ const DynamicModal = ({ config, onSave }) => {
         }
       },
     });
-
+  
     const tx = db.transaction(dbConfig.objectStore, 'readwrite');
     const store = tx.objectStore(dbConfig.objectStore);
-    const count = await store.count();
-
+  
+    // Buscar el ID más alto existente en la base de datos
+    const allRecords = await store.getAll();
+    const maxId = allRecords.reduce((max, record) => (record.id > max ? record.id : max), 0);
+  
+    // Asignar el siguiente ID disponible si no existe
     if (!data.id) {
-      data.id = count;
+      data.id = maxId + 1;
     }
-
+  
+    // Agregar el registro a la base de datos
     await store.add(data);
     await tx.done;
   };
+  
 
   const handleSelectorOpen = (field) => {
     setCurrentField(field);
@@ -70,7 +76,7 @@ const DynamicModal = ({ config, onSave }) => {
 
   return (
     <div>
-      <Button onClick={handleOpen} variant='contained' sx={{ mt: 2 }}>Añadir Acciones y atajos</Button>
+      <Button onClick={handleOpen} variant='contained' sx={{ float: 'right', }}>Añadir Acciones y atajos</Button>
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-title">
         <Box sx={{
           position: 'absolute',
