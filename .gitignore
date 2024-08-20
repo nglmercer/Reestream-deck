@@ -9,3 +9,4 @@ bun.lockb
 .nx/cache
 .nx/workspace-data
 /credentials
+package-lock.json

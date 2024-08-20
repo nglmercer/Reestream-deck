@@ -1,4 +1,4 @@
-import open, { openApp, apps } from 'open';
+import open, { openApp, apps } from "open";
 
 class FileOpener {
   // Método para abrir un archivo o URL en el programa predeterminado
@@ -27,7 +27,7 @@ class FileOpener {
       await open(url, { app: { name: apps.browserPrivate } });
       console.log(`URL abierta en modo incógnito: ${url}`);
     } catch (error) {
-      console.error('Error al abrir en modo incógnito:', error);
+      console.error("Error al abrir en modo incógnito:", error);
     }
   }
 
@@ -43,12 +43,12 @@ class FileOpener {
 
   // Método específico para Electron (si es necesario)
   openWithElectron(path) {
-    if (typeof window !== 'undefined' && window.require) {
-      const { shell } = window.require('electron');
+    if (typeof window !== "undefined" && window.require) {
+      const { shell } = window.require("electron");
       shell.openPath(path);
       console.log(`Archivo abierto con Electron: ${path}`);
     } else {
-      console.error('Este método solo funciona en un entorno Electron');
+      console.error("Este método solo funciona en un entorno Electron");
     }
   }
   getAvailableAppIdentifiers() {

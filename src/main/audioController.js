@@ -1,4 +1,4 @@
-import { NodeAudioVolumeMixer } from 'node-audio-volume-mixer';
+import { NodeAudioVolumeMixer } from "node-audio-volume-mixer";
 
 export default class AudioController {
   constructor() {
@@ -13,7 +13,7 @@ export default class AudioController {
   // Obtener todas las sesiones de audio con sus volúmenes
   getAllSessions() {
     this.updateSessions();
-    return this.sessions.map(session => {
+    return this.sessions.map((session) => {
       const volume = this.getSessionVolume(session.pid);
       return { ...session, volume };
     });

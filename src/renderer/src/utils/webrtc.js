@@ -1,16 +1,22 @@
 // utils/webrtc.js
-export const createPeerConnection = (userId, socket, roomId, handleIceCandidate, setupDataChannel) => {
+export const createPeerConnection = (
+  userId,
+  socket,
+  roomId,
+  handleIceCandidate,
+  setupDataChannel,
+) => {
   const pc = new RTCPeerConnection({
-    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   });
 
   pc.onicecandidate = (event) => {
     if (event.candidate) {
-      socket.emit('webrtc', {
-        type: 'candidate',
+      socket.emit("webrtc", {
+        type: "candidate",
         data: event.candidate,
         to: userId,
-        roomId
+        roomId,
       });
     }
   };
@@ -23,36 +29,41 @@ export const createPeerConnection = (userId, socket, roomId, handleIceCandidate,
   return pc;
 };
 
-export const handleWebRTCSignal = async (pc, { type, data, from }, socket, roomId) => {
+export const handleWebRTCSignal = async (
+  pc,
+  { type, data, from },
+  socket,
+  roomId,
+) => {
   try {
-    if (type === 'offer') {
+    if (type === "offer") {
       await pc.setRemoteDescription(new RTCSessionDescription(data));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-      socket.emit('webrtc', { type: 'answer', data: answer, to: from, roomId });
-    } else if (type === 'answer') {
+      socket.emit("webrtc", { type: "answer", data: answer, to: from, roomId });
+    } else if (type === "answer") {
       await pc.setRemoteDescription(new RTCSessionDescription(data));
-    } else if (type === 'candidate') {
+    } else if (type === "candidate") {
       await pc.addIceCandidate(new RTCIceCandidate(data));
     }
   } catch (error) {
-    console.error('Error handling WebRTC signal:', error);
+    console.error("Error handling WebRTC signal:", error);
   }
 };
 
 export const createDataChannel = (pc, userId, socket, roomId) => {
-  const channel = pc.createDataChannel('chat');
+  const channel = pc.createDataChannel("chat");
   setupDataChannel(channel, userId);
 
   pc.createOffer()
-    .then(offer => pc.setLocalDescription(offer))
+    .then((offer) => pc.setLocalDescription(offer))
     .then(() => {
-      socket.emit('webrtc', {
-        type: 'offer',
+      socket.emit("webrtc", {
+        type: "offer",
         data: pc.localDescription,
         to: userId,
-        roomId
+        roomId,
       });
     })
-    .catch(error => console.error('Error creating offer:', error));
+    .catch((error) => console.error("Error creating offer:", error));
 };

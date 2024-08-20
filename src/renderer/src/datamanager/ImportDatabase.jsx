@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { openDB, deleteDB } from 'idb';
+import React, { useState, useEffect } from "react";
+import { openDB, deleteDB } from "idb";
 
 const ImportDatabase = ({ onImportComplete }) => {
-  const [importFormat, setImportFormat] = useState('file');
-  const [importedData, setImportedData] = useState('');
+  const [importFormat, setImportFormat] = useState("file");
+  const [importedData, setImportedData] = useState("");
   const [dbNames, setDbNames] = useState([]);
-  const [selectedDbName, setSelectedDbName] = useState('');
-  const [newDbName, setNewDbName] = useState('');
+  const [selectedDbName, setSelectedDbName] = useState("");
+  const [newDbName, setNewDbName] = useState("");
 
   useEffect(() => {
     loadDatabases();
@@ -15,10 +15,10 @@ const ImportDatabase = ({ onImportComplete }) => {
   const loadDatabases = async () => {
     try {
       const dbList = await indexedDB.databases();
-      setDbNames(dbList.map(db => db.name));
+      setDbNames(dbList.map((db) => db.name));
     } catch (error) {
-      console.error('Failed to load databases', error);
-      alert('Failed to load databases.');
+      console.error("Failed to load databases", error);
+      alert("Failed to load databases.");
     }
   };
 
@@ -34,16 +34,16 @@ const ImportDatabase = ({ onImportComplete }) => {
       reader.onload = async (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          const dbName = selectedDbName || file.name.replace('.json', '');
+          const dbName = selectedDbName || file.name.replace(".json", "");
           await importDatabaseFromData(data, dbName);
         } catch (error) {
-          alert('Invalid JSON file.');
+          alert("Invalid JSON file.");
         }
       };
 
       reader.readAsText(file);
     } catch (error) {
-      alert('Failed to read the file.');
+      alert("Failed to read the file.");
     }
   };
 
@@ -54,14 +54,17 @@ const ImportDatabase = ({ onImportComplete }) => {
         upgrade(db) {
           for (const storeName in data) {
             if (!db.objectStoreNames.contains(storeName)) {
-              db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+              db.createObjectStore(storeName, {
+                keyPath: "id",
+                autoIncrement: true,
+              });
             }
           }
         },
       });
 
       for (const storeName in data) {
-        const tx = db.transaction(storeName, 'readwrite');
+        const tx = db.transaction(storeName, "readwrite");
         const store = tx.objectStore(storeName);
         for (const record of data[storeName]) {
           await store.add(record);
@@ -70,9 +73,9 @@ const ImportDatabase = ({ onImportComplete }) => {
       }
 
       onImportComplete();
-      alert('Database imported successfully');
+      alert("Database imported successfully");
     } catch (error) {
-      alert('Failed to import the database.');
+      alert("Failed to import the database.");
     }
   };
 
@@ -85,7 +88,7 @@ const ImportDatabase = ({ onImportComplete }) => {
         await importDatabaseFromData(data, dbName);
       }
     } catch (error) {
-      alert('Invalid JSON string.');
+      alert("Invalid JSON string.");
     }
   };
 
@@ -107,8 +110,8 @@ const ImportDatabase = ({ onImportComplete }) => {
           type="radio"
           name="importFormat"
           value="file"
-          checked={importFormat === 'file'}
-          onChange={() => setImportFormat('file')}
+          checked={importFormat === "file"}
+          onChange={() => setImportFormat("file")}
         />
         Import from File
       </label>
@@ -118,8 +121,8 @@ const ImportDatabase = ({ onImportComplete }) => {
           type="radio"
           name="importFormat"
           value="string"
-          checked={importFormat === 'string'}
-          onChange={() => setImportFormat('string')}
+          checked={importFormat === "string"}
+          onChange={() => setImportFormat("string")}
         />
         Import from String
       </label>
@@ -140,7 +143,7 @@ const ImportDatabase = ({ onImportComplete }) => {
         </select>
       </div>
 
-      {importFormat === 'file' && (
+      {importFormat === "file" && (
         <div className="mt-4">
           <input
             type="file"
@@ -157,7 +160,7 @@ const ImportDatabase = ({ onImportComplete }) => {
         </div>
       )}
 
-      {importFormat === 'string' && (
+      {importFormat === "string" && (
         <div className="mt-4">
           <textarea
             value={importedData}

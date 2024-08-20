@@ -1,17 +1,17 @@
-import React from 'react';
-import WebRTCChatRoom from './WebRTCChatRoom';
-import mediaManager from './utils/mediaManager';
-import socketManager from './utils/socket';
+import React from "react";
+import WebRTCChatRoom from "./WebRTCChatRoom";
+import mediaManager from "./utils/mediaManager";
+import socketManager from "./utils/socket";
 
 function ChatRoomContainer() {
   const handleStreamSelected = (stream) => {
     mediaManager.setLocalStream(stream);
-    const videoElement = document.getElementById('localVideo');
+    const videoElement = document.getElementById("localVideo");
     if (videoElement) {
       videoElement.srcObject = stream;
     }
     // Propagar el stream a todos los peers
-    Object.values(peerConnections.current).forEach(pc => {
+    Object.values(peerConnections.current).forEach((pc) => {
       mediaManager.addTrackToPeerConnection(pc);
     });
   };
@@ -19,7 +19,7 @@ function ChatRoomContainer() {
   const setupDataChannel = (channel, userId) => {
     channel.onopen = () => console.log(`Data channel opened with ${userId}`);
 
-    channel.onmessage = event => {
+    channel.onmessage = (event) => {
       // Manejar el mensaje del data channel
       console.log(`Message from ${userId}:`, event.data);
     };
@@ -28,28 +28,28 @@ function ChatRoomContainer() {
   };
 
   const createDataChannel = (pc, userId) => {
-    const channel = pc.createDataChannel('chat');
+    const channel = pc.createDataChannel("chat");
     setupDataChannel(channel, userId);
 
     pc.createOffer()
-      .then(offer => {
+      .then((offer) => {
         return pc.setLocalDescription(offer);
       })
       .then(() => {
-        socketManager.emitMessage('webrtc', {
-          type: 'offer',
+        socketManager.emitMessage("webrtc", {
+          type: "offer",
           data: pc.localDescription,
           to: userId,
           roomId,
         });
       })
-      .catch(error => console.error('Error creating offer:', error));
+      .catch((error) => console.error("Error creating offer:", error));
   };
 
   return (
-    <WebRTCChatRoom 
-      handleStreamSelected={handleStreamSelected} 
-      setupDataChannel={setupDataChannel} 
+    <WebRTCChatRoom
+      handleStreamSelected={handleStreamSelected}
+      setupDataChannel={setupDataChannel}
       createDataChannel={createDataChannel}
     />
   );

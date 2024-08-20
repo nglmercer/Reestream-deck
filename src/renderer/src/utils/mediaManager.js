@@ -8,10 +8,13 @@ class MediaManager {
 
   async getMediaStream() {
     try {
-      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
       return this.localStream;
     } catch (error) {
-      console.error('Error getting media stream:', error);
+      console.error("Error getting media stream:", error);
       return null;
     }
   }
@@ -26,7 +29,9 @@ class MediaManager {
 
   addTrackToPeerConnection(pc) {
     if (this.localStream) {
-      this.localStream.getTracks().forEach(track => pc.addTrack(track, this.localStream));
+      this.localStream
+        .getTracks()
+        .forEach((track) => pc.addTrack(track, this.localStream));
     }
   }
 
@@ -37,7 +42,7 @@ class MediaManager {
 
   stopLocalStream() {
     if (this.localStream) {
-      this.localStream.getTracks().forEach(track => track.stop());
+      this.localStream.getTracks().forEach((track) => track.stop());
     }
   }
 }

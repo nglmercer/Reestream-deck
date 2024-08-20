@@ -1,40 +1,40 @@
-import React from 'react';
-import DynamicModal from './components/DynamicModal';
-import datajson from './assets/datajson/keyboard.json';
+import React from "react";
+import DynamicModal from "./components/DynamicModal";
+import datajson from "./assets/datajson/keyboard.json";
 
 const Modalconfig = ({ onSave }) => {
   const options = Object.entries(datajson).map(([value, label]) => ({
     value,
-    label
+    label,
   }));
 
   const formConfig = [
     {
-      database: 'myCustomDatabase',
-      objectStore: 'customFormData',
+      database: "myCustomDatabase",
+      objectStore: "customFormData",
     },
     {
-      type: 'input',
-      name: 'nombre',
-      label: 'nombre',
-      inputType: 'text',
+      type: "input",
+      name: "nombre",
+      label: "nombre",
+      inputType: "text",
     },
     {
-      type: 'multiSelect',
-      name: 'keyvalue',
-      label: 'keyvalue',
+      type: "multiSelect",
+      name: "keyvalue",
+      label: "keyvalue",
       options: options,
     },
     {
-      type: 'colorPicker',
-      name: 'color',
-      label: 'color',
-    }
+      type: "colorPicker",
+      name: "color",
+      label: "color",
+    },
   ];
 
   const handleSave = (data) => {
-    console.log('Data saved to IndexedDB and retrieved:', data);
-    onSave();  // Notifica a Gridcontent que se ha guardado la información
+    console.log("Data saved to IndexedDB and retrieved:", data);
+    onSave(); // Notifica a Gridcontent que se ha guardado la información
   };
 
   return (

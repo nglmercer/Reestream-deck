@@ -3,30 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>Electron</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'unsafe-inline'; script-src 'self'; media-src *;img-src * data:; connect-src *"
-    />
+    /> -->
   </head>
- 
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-
-
-    <!-- <script>
-      const socket = io("http://localhost:3000");
-      socket.on('connect', () => {
-        console.log('connected');
-      });
-
-      socket.on('disconnect', () => {
-        console.log('disconnected') ;
-      });
-      socket.on('audioData', (data) => {
-        console.log(data);
-      });
-    </script> -->
   </body>
 </html>

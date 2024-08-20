@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { openDB } from 'idb';
+import React, { useState } from "react";
+import { openDB } from "idb";
 
 const ExportDatabase = ({ databases, onExportComplete }) => {
-  const [exportFormat, setExportFormat] = useState('file');
-  const [exportedData, setExportedData] = useState('');
+  const [exportFormat, setExportFormat] = useState("file");
+  const [exportedData, setExportedData] = useState("");
 
   const exportDatabase = async (dbName) => {
     const db = await openDB(dbName);
     const data = {};
 
     for (const storeName of db.objectStoreNames) {
-      const tx = db.transaction(storeName, 'readonly');
+      const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
       const allRecords = await store.getAll();
       data[storeName] = allRecords;
@@ -18,16 +18,16 @@ const ExportDatabase = ({ databases, onExportComplete }) => {
 
     const jsonData = JSON.stringify(data);
 
-    if (exportFormat === 'file') {
-      const blob = new Blob([jsonData], { type: 'application/json' });
+    if (exportFormat === "file") {
+      const blob = new Blob([jsonData], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `${dbName}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-    } else if (exportFormat === 'string') {
+    } else if (exportFormat === "string") {
       setExportedData(jsonData);
     }
 
@@ -42,8 +42,8 @@ const ExportDatabase = ({ databases, onExportComplete }) => {
           type="radio"
           name="exportFormat"
           value="file"
-          checked={exportFormat === 'file'}
-          onChange={() => setExportFormat('file')}
+          checked={exportFormat === "file"}
+          onChange={() => setExportFormat("file")}
         />
         Export as File
       </label>
@@ -52,13 +52,13 @@ const ExportDatabase = ({ databases, onExportComplete }) => {
           type="radio"
           name="exportFormat"
           value="string"
-          checked={exportFormat === 'string'}
-          onChange={() => setExportFormat('string')}
+          checked={exportFormat === "string"}
+          onChange={() => setExportFormat("string")}
         />
         Export as String
       </label>
 
-      {exportFormat === 'string' && (
+      {exportFormat === "string" && (
         <div className="mt-4">
           <textarea
             value={exportedData}
@@ -77,7 +77,7 @@ const ExportDatabase = ({ databases, onExportComplete }) => {
       )}
 
       <ul className="mb-4">
-        {databases.map(db => (
+        {databases.map((db) => (
           <li key={db} className="mb-2">
             {db}
             <button

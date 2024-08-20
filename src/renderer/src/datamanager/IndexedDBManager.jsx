@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import ImportDatabase from './ImportDatabase';
-import ExportDatabase from './ExportDatabase';
+import React, { useState, useEffect } from "react";
+import ImportDatabase from "./ImportDatabase";
+import ExportDatabase from "./ExportDatabase";
 
 const IndexedDBManager = () => {
   const [databases, setDatabases] = useState([]);
@@ -11,7 +11,7 @@ const IndexedDBManager = () => {
 
   const loadDatabases = async () => {
     const dbs = await indexedDB.databases();
-    setDatabases(dbs.map(db => db.name));
+    setDatabases(dbs.map((db) => db.name));
   };
 
   return (
